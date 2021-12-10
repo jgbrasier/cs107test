@@ -6,12 +6,6 @@ Usage
 Installation
 ------------
 
-To use **autodiff_107** first clone the repository from github
-
-.. code-block:: console
-
-    $ git clone https://github.com/cs107-errajexi/cs107-FinalProject
-
 Create a virtual environment, for example *autodiff_107-env*, but you are free to name it as you wish!
 
 .. code-block:: console
@@ -24,12 +18,12 @@ Activate it!
 
     $ source autodiff_107-env/bin/activate
 
-Install the requirements using pip:
+pip install **autodiff_107**
 
 .. code-block:: console
 
-    $ pip install -r requirements.txt
-
+    $ pip install autodiff_107
+   
 Congrats! You are now all set to use the package.
 
 .. _getting_started:
@@ -37,57 +31,47 @@ Congrats! You are now all set to use the package.
 Getting Started
 ---------------
 
-.. note::
-   This tutorial is valid until the package will be published. Currenlty only the working backend is implemented. User friendly wrappers and functions will be implemented at a later stage.
-
 Importing the package
 
 .. code-block:: python3
 
     import autodiff_107 as ad
 
-To actually get the benefits of AD in our package, users will wrap their variables with the **Node** object. Operations for the functions the user wants to use will have to be done using this object. Constants involved in the function can be inserted normally and do not need to be wrapped in **Node** objects.
+To actually get the benefits of AD in our package, users will wrap their variables with the ```variable``` method. Operations for the functions the user wants to use will have to be done using this object. Constants involved in the function can be inserted normally and do not need to be wrapped.
 
 Example:
 
 .. code-block:: python3
 
-    x = ad.Node(10)
-    y = ad.Node(17)
+    from autodiff_107.diff import variable as var
+    x = var(10)
+    y = var(17)
     z = (x + y)**2 - 14
 
 This package handily integrates all numpy functions that the user can call with the commonly used ``np`` alias:
 
 .. code-block:: python3
 
-    from autodiff_107.nodemath import numpy as np
-
-    x=ad.Node(2)
+    from autodiff_107.diff import numpy as np
+    x=var(2)
     z=3*x
     w=np.exp(z)
     f=np.cos(w)
 
-Taking derivatives and partial derivatives:
+Taking derivatives
 
 .. code-block:: python3
 
-    f._derivative(x)
-    w._derivative(z)
+    x = var(3)
+    f = lambda x: 3*x+4
+    df = derivative(f(x), x)
 
-Example: **Newton Root Finding**
+Example: **Gradient Descent**
 
 .. code-block:: python3
 
-    def newton(function, x0, tol):
-        xn = ad.Node(x0)
-        while np.abs(function(xn)._value) > tol:
-            f = function(xn)
-            df = f._derivative(xn)
-            xn -= f/df
-        return xn._value
-
-    # find root of 3*x+1
-    x0 = 1
-    f = lambda x: 3*x+1
-    tol = 1e-3
-    root = newton(f, x0, tol)
+    x0 = [1, 2]
+	f = lambda x: x[0]**2 + x[1]**2 + 3
+	alpha=.1
+	max_iter=1000
+	x_min = gradient_descent(f, x0, alpha, max_iter)
