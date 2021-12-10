@@ -118,6 +118,10 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+# shinx docs
+docs/build/
+docs/source/
+
 # mkdocs documentation
 /site
 
