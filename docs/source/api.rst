@@ -4,15 +4,21 @@ API
 Variables and derivatives
 -------------------------
 
-.. automodule:: autodiff_107.diff.Node
+.. automodule:: src.autodiff_107.diff
     :members:
 
 Optimizers
 ----------
-.. automodule:: autodiff_107.optim.optimize
+.. automodule:: src.autodiff_107.optim
     :members:
 
 Root finding
 ------------
-.. automodule:: autodiff_107.optim.rootfinding
+.. automodule:: src.autodiff_107.rootfind
+    :members:
+
+Visulization
+------------
+
+.. automodule:: src.autodiff_107.viz
     :members:

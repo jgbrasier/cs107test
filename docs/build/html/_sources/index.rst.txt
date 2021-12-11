@@ -6,6 +6,10 @@
 Welcome to autodiff_107's documentation!
 ========================================
 
+.. image:: ../figs/logo.png
+   :width: 400
+   :alt: logo
+
 **autodiff_107** is a Python library for Automatic Differentiation. It is part of the CS107/AC207 course project at Harvard University.
 
 
@@ -19,6 +23,8 @@ Check out the :doc:`usage` section for further information, including how to
 
    usage
    api
+   viz
+   implementation
 
 
 Indices and tables

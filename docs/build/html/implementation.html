@@ -2,9 +2,11 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="#" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Computational graph visulization" href="viz.html" />
 
-    <meta name="generator" content="sphinx-4.3.1, furo 2021.11.23"/><title>Search - autodiff_107 0.1.0 documentation</title><link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <meta name="generator" content="sphinx-4.3.1, furo 2021.11.23"/>
+        <title>Implementation - autodiff_107 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
     
@@ -145,17 +147,17 @@
   
   <span class="sidebar-brand-text">autodiff_107 0.1.0 documentation</span>
   
-</a><form class="sidebar-search-container" method="get" action="#" role="search">
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="viz.html">Computational graph visulization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Implementation</a></li>
 </ul>
 
 </div>
@@ -182,17 +184,18 @@
           </label>
         </div>
         <article role="main">
-          
-<noscript>
-<div class="admonition error">
-  <p class="admonition-title">Error</p>
-  <p>
-    Please activate JavaScript to enable the search functionality.
-  </p>
+          <div class="section" id="implementation">
+<h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here, we explain what happens under the hood. Not everything discussed here is user facing!</p>
 </div>
-</noscript>
-
-<div id="search-results"></div>
+<p>The core data structure for our library is a <strong>Node</strong>, defined in <strong>diff.py</strong>. <strong>Node</strong> s make up the computational graph that we  traverse for forward mode AD as well as for forward and backward passes of reverse mode. They each have a value, a derivative with respect to each parent and a forward mode derivative used to do forward mode. This forward mode derivative is the current derivative of the Node with respect to the inputs and a user defined seed.
+Nodes have overloaded operators (addition, substraction, cos, etc) such that when they are used in a computation, new nodes are created for the result of the operation, and the resulting relative derivatives are stored for each intermediate node. We also store the name of the operation that was performed (with result._operation). The result of a function is returned as one node that is the descendant of all of the inputs used in that computation.</p>
+<p>We store partial derivatives as a dictionary because we need to store the derivative with respect to each parent. This gives us the connections of the computational graph using the keys to this dictionary and is how we do traversal for the backward pass. This is also what we use in the visualization tools.</p>
+<p>As mentionned, we had to implement new versions of operators like cos, exp, etc. that operate on Nodes. They also handle setting derivatives and keeping track of the names of the operation. We did this by writing a wrapper for unary numpy functions. Then we defined derivatives for all the functions we wanted to support and used them to wrap the numpy functions such that they would handle Node objects and properly maintain the computational graph.</p>
+<p>We have a _backward function in diff.py that handles doing the reverse pass on results, and calculating the derivatives of the result with respect to the inputs. We allow passing either a single Node or a vector of Nodes into _derivative. This lets us easily handle functions from <span class="math notranslate nohighlight">\(\mathbb{R}^n \rightarrow \mathbb{R}^m\)</span>. Our user facing derivative function takes f and X and will output either the derivative of f with respect to X or a jacobian, depending on the shapes of f and X. f and X do have to be flat but the user can flatten their matrices however they like and reshape the output however works best for their use case.</p>
+</div>
 
         </article>
       </div>
@@ -200,13 +203,27 @@
         
         <div class="related-pages">
           
-          
+          <a class="prev-page" href="viz.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Computational graph visulization</div>
+                
+              </div>
+            </a>
         </div>
 
         <div class="related-information">
               Copyright &#169; 2021, Jean-Guillaume Brasier, Eryk Pecyna, Raphael Pellegrin, Xiyu Yang |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="_sources/implementation.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
         </div>
         
       </footer>
@@ -222,8 +239,6 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/furo.js"></script>
-    
-<script src="_static/searchtools.js"></script>
-<script src="_static/language_data.js"></script>
-<script src="searchindex.js"></script></body>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
 </html>
